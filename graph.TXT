@@ -1,0 +1,77 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+//հարևանության ցուցակ գրաֆի ներկայացման համար
+vector<int> arr[51];
+
+//զանգված՝ հայտնաբերման ժամանակի և ամենացածր նախնիների 
+//այցելած գագաթի նշագծման համար
+int low[1000000],in[1000000],vis[1000000];
+
+//ժամանակի հայտնաբերման պահպանման համար
+int timer,r;
+
+//հետևի եզրի համար
+void DFS(int node,int par){
+    int nchild=0;
+   vis[node]=1;
+   in[node]=low[node]=timer;
+   timer++;
+
+ //հանգույցի ուսումնասիրության համար
+   for(int child:arr[node]){
+
+    if(child==par){
+        continue;
+    }
+    if(vis[child]==1){
+
+        low[node]=min(low[node],in[child]);
+
+        //հետևի եզր
+    }
+    else{
+        DFS(child ,node);
+        low[node]=min(low[node],low[child]);
+        if(low[child]>=in[node] && par!=-1){
+                cout<<node<<endl;
+                r++;//հաշվելու հսմսր
+            //cout<<" Cross edge between "<<child<<" and "<<node<<" "<<endl;
+        }
+        nchild++;
+
+        //forward edge
+    }
+   }
+   //արմատային հանգույցի լրացուցիչ խնամքի համար
+   if(par==-1 && nchild>1){
+    cout<<node<<endl;
+    r++;
+   }
+}
+int main(){
+
+    int n,m,x,y;
+
+    /*n-ը գագաթի թիվն է, իսկ m-ը եզրի թիվն է
+     x-ը և y-ը ներկայացնում են ճանապարհը x-ի և y-ի միջև  */
+    cout<<"Մուտքագրեք գագաթի թիվը և եզրերի թիվը"<<endl;
+    cin>>n>>m;
+    while(m--){
+        cout<<"մուտքագրեք գրաֆի եզրերը"<<endl;
+        cin>>x>>y;
+        //սա չուղղորդված գրաֆիի համար է
+
+        arr[x].push_back(y);
+        arr[y].push_back(x);
+    }
+
+    DFS(0,-1);
+    cout<<"միացված կետերի ընդհանուր թիվը = "<<r<<" գրված է վերևում"<<endl;
+
+    return 0;
+
+
+}
+
